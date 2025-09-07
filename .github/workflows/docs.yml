@@ -25,4 +25,12 @@ jobs:
       #          global: true
       #          token: ${{ secrets.USER_TOKEN }}
       - name: Deploy docs
-        run: mkdocs gh-deploy --force
+        run: mkdocs build -d ./dist
+      - name: Deploy to staticinator
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          tar -czvf "./archive.tar.gz" -C "./dist" .
+          curl -F "file=@./archive.tar.gz" -H "Token: $TOKEN" -H "Target-Host: $HOST" "https://deploy.enjarai.dev/update" -v
+          
