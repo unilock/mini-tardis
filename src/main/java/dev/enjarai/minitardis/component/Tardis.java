@@ -13,6 +13,7 @@ import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
 import dev.enjarai.minitardis.component.flight.*;
 import dev.enjarai.minitardis.component.screen.app.HistoryApp;
 import dev.enjarai.minitardis.component.screen.app.ScreenAppTypes;
+import net.commoble.infiniverse.api.InfiniverseAPI;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
@@ -34,14 +35,13 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.chunk.FlatChunkGenerator;
 import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.FlatChunkGeneratorLayer;
 import net.minecraft.world.poi.PointOfInterest;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import org.jetbrains.annotations.Nullable;
-import xyz.nucleoid.fantasy.RuntimeWorldConfig;
-import xyz.nucleoid.fantasy.RuntimeWorldHandle;
 
 import java.util.*;
 
@@ -67,7 +67,7 @@ public class Tardis {
 
     TardisHolder holder;
     @Nullable
-    RuntimeWorldHandle interiorWorld;
+    ServerWorld interiorWorld;
     DestinationScanner destinationScanner = new DestinationScanner(this, 128);
     private int sparksQueued;
 
@@ -195,7 +195,7 @@ public class Tardis {
         if (interiorWorld == null) {
             initializeInteriorWorld();
         }
-        return interiorWorld.asWorld();
+        return interiorWorld;
     }
 
     public Optional<ServerWorld> getExteriorWorld() {
@@ -228,14 +228,13 @@ public class Tardis {
                 List.of(new FlatChunkGeneratorLayer(256, ModBlocks.TARDIS_PLATING)),
                 Optional.empty(), voidBiome
         ));
-        var config = new RuntimeWorldConfig()
-                .setDimensionType(dimensionRegistry.entryOf(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, MiniTardis.id("tardis_interior"))))
-                .setGenerator(chunkGenerator)
-                .setGameRule(GameRules.DO_DAYLIGHT_CYCLE, false)
-                .setSeed(1234L);
-        interiorWorld = holder.getFantasy().getOrOpenPersistentWorld(MiniTardis.id("tardis/" + uuid.toString()), config);
-        interiorWorld.setTickWhenEmpty(false);
-        interiorWorld.asWorld().getComponent(ModCCAComponents.TARDIS_REFERENCE).tardis = this;
+        var options = new DimensionOptions(
+                dimensionRegistry.entryOf(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, MiniTardis.id("tardis_interior"))),
+                chunkGenerator
+        );
+        interiorWorld = InfiniverseAPI.get().getOrCreateLevel(holder.getServer(), RegistryKey.of(RegistryKeys.WORLD, MiniTardis.id("tardis/" + uuid.toString())), () -> options);
+        interiorWorld.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(false, holder.getServer());
+        interiorWorld.getComponent(ModCCAComponents.TARDIS_REFERENCE).tardis = this;
 
         if (!interiorPlaced) {
             buildInterior();

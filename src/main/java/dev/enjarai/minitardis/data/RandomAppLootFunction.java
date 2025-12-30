@@ -23,7 +23,7 @@ public record RandomAppLootFunction(List<RegistryKey<World>> additionalDimension
             .toList();
 
     @Override
-    public LootFunctionType getType() {
+    public LootFunctionType<RandomAppLootFunction> getType() {
         return ModDataStuff.RANDOM_APP_LOOT_FUNCTION_TYPE;
     }
 

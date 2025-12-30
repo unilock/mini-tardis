@@ -10,14 +10,12 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Util;
 import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
-import xyz.nucleoid.fantasy.Fantasy;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class TardisHolder implements ServerTickingComponent {
     private MinecraftServer server;
-    private Fantasy fantasy;
     private Map<UUID, Tardis> tardii = new HashMap<>();
 
     private void loadServer() {
@@ -25,7 +23,6 @@ public class TardisHolder implements ServerTickingComponent {
         if (this.server == null) {
             throw new IllegalStateException("Interacted with Tardis properties too early, wait for server to initialize.");
         }
-        this.fantasy = Fantasy.get(server);
     }
 
     public MinecraftServer getServer() {
@@ -33,13 +30,6 @@ public class TardisHolder implements ServerTickingComponent {
             loadServer();
         }
         return server;
-    }
-
-    public Fantasy getFantasy() {
-        if (fantasy == null) {
-            loadServer();
-        }
-        return fantasy;
     }
 
     public void addTardis(Tardis tardis) {

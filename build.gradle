@@ -1,10 +1,10 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'fabric-loom' version '1.14-SNAPSHOT'
 	id 'maven-publish'
-	id "me.modmuss50.mod-publish-plugin" version "0.4.4"
+	id "me.modmuss50.mod-publish-plugin" version "0.4.+"
 }
 
-version = "${project.mod_version}+${project.minecraft_version}"
+version = "${project.mod_version}+${project.minecraft_version}+infiniverse"
 group = project.maven_group
 
 base {
@@ -80,10 +80,8 @@ dependencies {
 	}
 
 	modApi include("me.lucko:fabric-permissions-api:${property('deps.permissions_api')}")
-	modApi include("xyz.nucleoid:fantasy:${property('deps.fantasy')}")
 
 	annotationProcessor modApi("io.wispforest:owo-lib:${property('deps.owo-lib')}")
-	include "io.wispforest:owo-sentinel:${property('deps.owo-lib')}"
 }
 
 processResources {
@@ -135,7 +133,7 @@ publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			groupId = project.maven_group
-			artifactId = archivesBaseName
+			artifactId = project.base.archivesName
 			version = project.version
 
 			from components.java
@@ -227,4 +225,13 @@ tasks.register('publishAll') {
 	group 'publishing'
 	dependsOn 'publish'
 	dependsOn 'publishMods'
+}
+
+sourceSets {
+    dummy {
+        compileClasspath += configurations.compileClasspath
+    }
+    main {
+        compileClasspath += dummy.output
+    }
 }

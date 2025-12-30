@@ -65,7 +65,7 @@ public final class DefaultFonts {
 
 
     static {
-        var path = FabricLoader.getInstance().getModContainer("mini_tardis").get().getPath("fonts");
+        var path = FabricLoader.getInstance().getModContainer("mini_tardis").orElseThrow().findPath("fonts").orElseThrow();
         VANILLA = REGISTRY.register(Identifier.of("minecraft:default"), read(path.resolve("vanilla.mcaf")));
         ALT = REGISTRY.register(Identifier.of("minecraft:alt"), read(path.resolve("alt.mcaf")));
         ILLAGER_ALT = REGISTRY.register(Identifier.of("minecraft:illageralt"), read(path.resolve("illageralt.mcaf")));

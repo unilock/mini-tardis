@@ -5,10 +5,10 @@
 	"mixins": [
 		"CompassItemMixin"
 	],
-	"injectors": {
-		"defaultRequire": 1
-	},
 	"client": [
 		"client.GameRendererMixin"
-	]
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
 }
