@@ -21,18 +21,13 @@ repositories {
 	maven { url 'https://maven.enjarai.dev/releases' }
 	maven { url 'https://maven.enjarai.dev/mirrors' }
 
-	// Polymer and other server-side utils
-	maven { url 'https://maven.nucleoid.xyz' }
-
-	// Permissions API
-	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-
 	// CCA
 	maven { url 'https://maven.ladysnake.org/releases' }
 
-	// Crash pipe
-	maven { url "https://maven.kikugie.dev/releases"}
+    // Permissions API
+    maven { url 'https://maven.nucleoid.xyz' }
 
+    // owo-lib
 	maven { url "https://maven.wispforest.io/releases" }
 }
 
@@ -68,18 +63,18 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${property('deps.fabric')}"
 
-	modApi include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}")
-	modApi include("dev.onyxstudios.cardinal-components-api:cardinal-components-level:${project.cca_version}")
-	modApi include("dev.onyxstudios.cardinal-components-api:cardinal-components-world:${project.cca_version}")
-	modApi include("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}")
+	modApi include("org.ladysnake.cardinal-components-api:cardinal-components-base:${property('deps.cca')}")
+	modApi include("org.ladysnake.cardinal-components-api:cardinal-components-entity:${property('deps.cca')}")
+	modApi include("org.ladysnake.cardinal-components-api:cardinal-components-level:${property('deps.cca')}")
+	modApi include("org.ladysnake.cardinal-components-api:cardinal-components-world:${property('deps.cca')}")
 
-	modImplementation("nl.enjarai:cicada-lib:${project.cicada_version}") {
+	modImplementation("nl.enjarai:cicada-lib:${property('deps.cicada')}") {
 		exclude group: "net.fabricmc.fabric-api"
 	}
 
-	modApi include("me.lucko:fabric-permissions-api:${property('deps.permissions_api')}")
+	modApi include("me.lucko:fabric-permissions-api:${property('deps.permissions')}")
 
 	annotationProcessor modApi("io.wispforest:owo-lib:${property('deps.owo-lib')}")
 }
@@ -113,7 +108,7 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName.get()}"}
+		rename { "${it}_${project.base.archivesName.get()}" }
 	}
 }
 
